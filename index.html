@@ -21,7 +21,7 @@ body {
   padding:30px;
   border-radius:16px;
   width:100%;
-  max-width:420px;
+  max-width:450px;
   box-shadow:0 20px 40px rgba(0,0,0,.6);
 }
 
@@ -33,17 +33,11 @@ h1 {
 .subtitle {
   text-align:center;
   color:#94a3b8;
-  margin-bottom:20px;
+  margin-bottom:18px;
   font-size:14px;
 }
 
-.pairs {
-  text-align:center;
-  color:#cbd5f5;
-  margin-bottom:16px;
-}
-
-input, select {
+select, input {
   width:100%;
   padding:12px;
   margin-bottom:12px;
@@ -52,27 +46,23 @@ input, select {
   font-size:16px;
 }
 
-.result {
-  margin-top:10px;
-  font-size:18px;
-  text-align:center;
-  font-weight:bold;
-}
-
-.btn {
-  margin-top:16px;
-  background:#22c55e;
-  color:#052e16;
-  text-align:center;
+button {
+  width:100%;
   padding:14px;
+  border:none;
   border-radius:12px;
-  font-size:18px;
+  font-size:17px;
   font-weight:600;
   cursor:pointer;
+  margin-top:10px;
 }
 
-.btn:hover {
-  background:#16a34a;
+.whatsapp {
+  background:#22c55e;
+}
+
+.telegram {
+  background:#38bdf8;
 }
 
 .note {
@@ -88,65 +78,75 @@ input, select {
 
 <div class="card">
   <h1>ОБМЕН ВАЛЮТ</h1>
+  <div class="subtitle">Любые валюты мира</div>
 
-  <div class="pairs">
-    RUB ⇄ KZT · USDT · CNY · TRY
-  </div>
-
-  <div class="subtitle">
-    Работаем с любыми валютами
-  </div>
-
-  <input id="amount" type="number" placeholder="Введите сумму в RUB">
-
-  <select id="direction">
-    <option value="kzt">RUB → KZT</option>
-    <option value="usdt">RUB → USDT</option>
-    <option value="cny">RUB → CNY (юань)</option>
-    <option value="try">RUB → TRY (лира)</option>
+  <select id="from">
+    <option value="">Вы отдаёте</option>
   </select>
 
-  <div class="btn" onclick="calculate()">Рассчитать</div>
+  <select id="to">
+    <option value="">Вы получаете</option>
+  </select>
 
-  <div class="result" id="result"></div>
+  <input id="amount" type="number" placeholder="Сумма">
 
-  <div class="note">
-    Курс уточняется в WhatsApp
-  </div>
+  <button class="whatsapp" onclick="goWhatsApp()">Написать в WhatsApp</button>
+  <button class="telegram" onclick="goTelegram()">Написать в Telegram</button>
+
+  <div class="note">Курс согласовывается в чате</div>
 </div>
 
 <script>
-function calculate() {
-  let amount = document.getElementById("amount").value;
-  let direction = document.getElementById("direction").value;
-  let result = "";
+const currencies = [
+  "RUB","KZT","USD","EUR","USDT","CNY","TRY","AED","SAR","GEL","AMD","AZN",
+  "GBP","JPY","KRW","INR","PKR","BDT","UZS","TJS","KGS","THB","VND","MYR",
+  "IDR","PHP","SGD","HKD","CAD","AUD","NZD","CHF","SEK","NOK","DKK",
+  "BRL","ARS","CLP","MXN","COP","PEN","ZAR","EGP","ILS","IRR","IQD"
+];
 
-  if (amount <= 0) {
-    document.getElementById("result").innerText = "Введите сумму";
+const fromSelect = document.getElementById("from");
+const toSelect = document.getElementById("to");
+
+currencies.forEach(cur => {
+  let o1 = document.createElement("option");
+  o1.value = cur;
+  o1.textContent = cur;
+  fromSelect.appendChild(o1);
+
+  let o2 = document.createElement("option");
+  o2.value = cur;
+  o2.textContent = cur;
+  toSelect.appendChild(o2);
+});
+
+function goWhatsApp() {
+  let from = fromSelect.value;
+  let to = toSelect.value;
+  let amount = document.getElementById("amount").value;
+
+  if (!from || !to || !amount) {
+    alert("Заполните все поля");
     return;
   }
 
-  if (direction === "kzt") {
-    let rate = 5;
-    result = amount + " RUB ≈ " + (amount * rate) + " KZT";
+  let text = `Здравствуйте! Хочу обменять ${amount} ${from} на ${to}.`;
+  let url = "https://wa.me/77072191913?text=" + encodeURIComponent(text);
+  window.open(url, "_blank");
+}
+
+function goTelegram() {
+  let from = fromSelect.value;
+  let to = toSelect.value;
+  let amount = document.getElementById("amount").value;
+
+  if (!from || !to || !amount) {
+    alert("Заполните все поля");
+    return;
   }
 
-  if (direction === "usdt") {
-    let rate = 0.011;
-    result = amount + " RUB ≈ " + (amount * rate).toFixed(2) + " USDT";
-  }
-
-  if (direction === "cny") {
-    let rate = 0.08;
-    result = amount + " RUB ≈ " + (amount * rate).toFixed(2) + " CNY";
-  }
-
-  if (direction === "try") {
-    let rate = 0.34;
-    result = amount + " RUB ≈ " + (amount * rate).toFixed(2) + " TRY";
-  }
-
-  document.getElementById("result").innerText = result;
+  let text = `Здравствуйте! Хочу обменять ${amount} ${from} на ${to}.`;
+  let url = "https://t.me/ВАШ_USERNAME?text=" + encodeURIComponent(text);
+  window.open(url, "_blank");
 }
 </script>
 
