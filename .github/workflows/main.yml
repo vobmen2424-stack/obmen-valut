@@ -1,14 +1,31 @@
-# Обмен  валют
+name: Публикация сайта на GitHub Pages
 
-Простой сайт для обмена валют (RUB ⇄ KZT, RUB ⇄ USD).  
-Сайт адаптирован для мобильных устройств.  
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
 
-## Как работает
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
-1. Пользователь пишет в WhatsApp.
-2. Согласовывается курс.
-3. Производится обмен.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
-## Контакты
-
-[Написать в WhatsApp](https://wa.me/77072191913)
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Проверка репозитория
+        uses: actions/checkout@v4
+      - name: Настройка GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Загрузка файлов сайта
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+      - name: Публикация на GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
