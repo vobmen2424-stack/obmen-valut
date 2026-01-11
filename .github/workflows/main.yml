@@ -1,4 +1,4 @@
-name: Публикация сайта на GitHub Pages
+name: Публикация  сайта на GitHub Pages
 
 on:
   push:
